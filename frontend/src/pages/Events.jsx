@@ -30,14 +30,14 @@ const Events = () => {
   return (
     <div className="events-container">
       <div className="events-header">
-        <h2>Available Events</h2>
-        <p>Browse and book your favorite events</p>
+        <h2>🎉 Available Events</h2>
+        <p>Discover and book your favorite events - exciting moments await!</p>
       </div>
 
       {events.length === 0 ? (
         <div className="empty-state">
-          <p>No events found at the moment</p>
-          <p className="text-muted">Check back later for new events!</p>
+          <p>😔 No events found at the moment</p>
+          <p className="text-muted">Don't worry! New events are being added every day. Check back soon!</p>
         </div>
       ) : (
         <div className="events-grid">
@@ -51,22 +51,32 @@ const Events = () => {
               <div className="event-details">
                 <div className="detail-item">
                   <span className="icon">📍</span>
-                  <p>{event.location}</p>
+                  <div>
+                    <p style={{ margin: 0 }}>{event.location}</p>
+                  </div>
                 </div>
                 <div className="detail-item">
                   <span className="icon">📅</span>
-                  <p>{new Date(event.date).toLocaleDateString()}</p>
+                  <div>
+                    <p style={{ margin: 0 }}>{new Date(event.date).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}</p>
+                  </div>
                 </div>
                 <div className="detail-item">
                   <span className="icon">💺</span>
-                  <p>{event.availableSeats} seats available</p>
+                  <div>
+                    <p style={{ margin: 0 }}>
+                      <strong>{event.availableSeats}</strong> seats left
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <p className="event-description">{event.description}</p>
+              <p className="event-description">
+                {event.description || "Experience an amazing event like never before!"}
+              </p>
 
               <Link to={`/events/${event.id}`} className="btn-primary btn-block">
-                View Details & Book
+                🎫 View Details & Book
               </Link>
             </div>
           ))}

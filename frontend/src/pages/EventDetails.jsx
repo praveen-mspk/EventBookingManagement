@@ -66,43 +66,50 @@ const EventDetails = () => {
     <div className="event-details-container">
       <div className="event-details-header">
         <div className="details-content">
-          <h2>{selectedEvent.title}</h2>
+          <h2>🎪 {selectedEvent.title}</h2>
           <div className="event-meta">
             <span className="meta-item">
               <span className="icon">📍</span> {selectedEvent.location}
             </span>
             <span className="meta-item">
-              <span className="icon">📅</span> {new Date(selectedEvent.date).toLocaleDateString()}
+              <span className="icon">📅</span> {new Date(selectedEvent.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+            </span>
+            <span className="meta-item">
+              <span className="icon">⭐</span> Premium Event
             </span>
           </div>
         </div>
-        <div className="price-badge">₹{selectedEvent.price}/ticket</div>
+        <div className="price-badge">₹{selectedEvent.price}</div>
       </div>
 
       <div className="event-details-grid">
         <div className="details-left">
           <section className="details-section">
-            <h3>About This Event</h3>
-            <p className="event-description">{selectedEvent.description}</p>
+            <h3>📖 About This Event</h3>
+            <p className="event-description">
+              {selectedEvent.description || "Get ready for an unforgettable experience! This event promises to deliver amazing moments and memories that will last a lifetime."}
+            </p>
           </section>
 
           <section className="details-section">
-            <h3>Event Details</h3>
+            <h3>📋 Event Information</h3>
             <div className="info-grid">
               <div className="info-item">
-                <label>Venue</label>
+                <label>🏢 Venue</label>
                 <p>{selectedEvent.location}</p>
               </div>
               <div className="info-item">
-                <label>Date</label>
-                <p>{new Date(selectedEvent.date).toLocaleDateString()}</p>
+                <label>🗓️ Date & Time</label>
+                <p>{new Date(selectedEvent.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
               </div>
               <div className="info-item">
-                <label>Available Seats</label>
-                <p>{selectedEvent.availableSeats} seats</p>
+                <label>💺 Available Seats</label>
+                <p style={{ color: selectedEvent.availableSeats < 10 ? "#ef4444" : "#10b981", fontWeight: "700" }}>
+                  {selectedEvent.availableSeats} seats
+                </p>
               </div>
               <div className="info-item">
-                <label>Price per Ticket</label>
+                <label>💰 Price per Ticket</label>
                 <p>₹{selectedEvent.price}</p>
               </div>
             </div>
@@ -112,10 +119,10 @@ const EventDetails = () => {
         <div className="details-right">
           {!booking && (
             <div className="booking-card">
-              <h3>Book Your Tickets</h3>
+              <h3>🎫 Book Your Tickets</h3>
               
               <div className="form-group">
-                <label htmlFor="tickets">Number of Tickets</label>
+                <label htmlFor="tickets">🎟️ Number of Tickets</label>
                 <input
                   id="tickets"
                   type="number"
@@ -133,7 +140,7 @@ const EventDetails = () => {
                   <span className="font-bold">₹{tickets * selectedEvent.price}</span>
                 </div>
                 <div className="summary-total">
-                  <span>Total Amount</span>
+                  <span>💰 Total Amount</span>
                   <span className="text-lg font-bold">₹{tickets * selectedEvent.price}</span>
                 </div>
               </div>
@@ -141,9 +148,9 @@ const EventDetails = () => {
               <button 
                 onClick={handleBooking} 
                 disabled={bookingState.loading}
-                className="btn-primary btn-block"
+                className="btn-primary btn-block btn-lg"
               >
-                {bookingState.loading ? "Creating Booking..." : "Continue to Payment"}
+                {bookingState.loading ? "⏳ Creating Booking..." : "💳 Continue to Payment"}
               </button>
 
               {bookingState.error && (

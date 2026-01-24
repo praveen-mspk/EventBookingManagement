@@ -67,8 +67,8 @@ const StripePayment = ({ bookingId, onSuccess }) => {
 
   return (
     <div className="payment-container">
-      <h3>Complete Payment</h3>
-      <p className="payment-subtitle">Enter your card details to complete the booking</p>
+      <h3>💳 Complete Payment</h3>
+      <p className="payment-subtitle">Enter your card details to secure your booking</p>
 
       {error && <div className="error-message">{error}</div>}
 
@@ -81,7 +81,7 @@ const StripePayment = ({ bookingId, onSuccess }) => {
         disabled={!stripe || loading}
         className="btn-primary btn-block btn-lg"
       >
-        {loading ? "Processing Payment..." : "Complete Payment"}
+        {loading ? "⏳ Processing Payment..." : "✅ Complete Payment"}
       </button>
 
       <p className="payment-info">

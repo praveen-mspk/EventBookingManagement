@@ -32,14 +32,17 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2 className="auth-title">Welcome Back</h2>
-        <p className="auth-subtitle">Sign in to your account</p>
+        <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🎯</div>
+          <h2 className="auth-title">Welcome Back! 👋</h2>
+          <p className="auth-subtitle">Sign in to explore amazing events and book your tickets</p>
+        </div>
 
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">📧 Email Address</label>
             <input
               id="email"
               type="email"
@@ -53,12 +56,12 @@ const Login = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">🔐 Password</label>
             <input
               id="password"
               type="password"
               name="password"
-              placeholder="Enter your password"
+              placeholder="Enter your secure password"
               value={form.password}
               onChange={handleChange}
               required
@@ -66,13 +69,18 @@ const Login = () => {
             />
           </div>
 
-          <button type="submit" disabled={loading} className="btn-primary btn-block">
-            {loading ? "Signing in..." : "Sign In"}
+          <button type="submit" disabled={loading} className="btn-primary btn-block btn-lg">
+            {loading ? "⏳ Signing in..." : "🚀 Sign In"}
           </button>
         </form>
 
         <div className="auth-footer">
-          <p>Don't have an account? <Link to="/signup" className="link">Sign up</Link></p>
+          <p>
+            Don't have an account?{" "}
+            <Link to="/signup" className="link">
+              Create one now
+            </Link>
+          </p>
         </div>
       </div>
     </div>

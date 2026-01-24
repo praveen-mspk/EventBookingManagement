@@ -55,8 +55,8 @@ const AdminDashboard = () => {
   return (
     <div className="admin-dashboard">
       <div className="admin-header">
-        <h2>Admin Dashboard</h2>
-        <p>Manage your events and bookings</p>
+        <h2>📊 Admin Dashboard</h2>
+        <p>Create, manage, and monitor all your events and bookings</p>
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -72,27 +72,27 @@ const AdminDashboard = () => {
 
         <div className="admin-events-section">
           <div className="section-header">
-            <h3>All Events ({events.length})</h3>
+            <h3>📅 All Events ({events.length})</h3>
           </div>
 
           {loading ? (
-            <div className="loading-spinner">Loading events...</div>
+            <div className="loading-spinner">Loading your amazing events...</div>
           ) : events.length === 0 ? (
             <div className="empty-state">
-              <p>No events created yet</p>
-              <p className="text-muted">Create your first event using the form on the left</p>
+              <p>🎭 No events created yet</p>
+              <p className="text-muted">Create your first event using the form on the left and start accepting bookings!</p>
             </div>
           ) : (
             <div className="events-table-responsive">
               <table className="admin-table">
                 <thead>
                   <tr>
-                    <th>Title</th>
-                    <th>Location</th>
-                    <th>Date</th>
-                    <th>Price</th>
-                    <th>Seats</th>
-                    <th>Actions</th>
+                    <th>🎪 Event Title</th>
+                    <th>📍 Location</th>
+                    <th>🗓️ Date</th>
+                    <th>💰 Price</th>
+                    <th>💺 Seats</th>
+                    <th>⚙️ Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -100,22 +100,28 @@ const AdminDashboard = () => {
                     <tr key={e.id}>
                       <td className="font-semibold">{e.title}</td>
                       <td>{e.location}</td>
-                      <td>{new Date(e.date).toLocaleDateString()}</td>
+                      <td>{new Date(e.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</td>
                       <td>₹{e.price}</td>
-                      <td>{e.availableSeats}</td>
+                      <td>
+                        <span style={{ color: e.availableSeats < 5 ? "#ef4444" : "#10b981", fontWeight: "700" }}>
+                          {e.availableSeats}
+                        </span>
+                      </td>
                       <td>
                         <div className="action-buttons">
                           <button 
                             onClick={() => setSelectedEvent(e)}
                             className="btn-edit"
+                            title="Edit this event"
                           >
-                            Edit
+                            ✏️ Edit
                           </button>
                           <button 
                             onClick={() => deleteEvent(e.id)}
                             className="btn-delete"
+                            title="Delete this event"
                           >
-                            Delete
+                            🗑️ Delete
                           </button>
                         </div>
                       </td>

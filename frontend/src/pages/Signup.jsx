@@ -29,19 +29,22 @@ const Signup = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2 className="auth-title">Create Account</h2>
-        <p className="auth-subtitle">Join us to book amazing events</p>
+        <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+          <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>✨</div>
+          <h2 className="auth-title">Join Our Community!</h2>
+          <p className="auth-subtitle">Create your account and discover unforgettable events</p>
+        </div>
 
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="name">Full Name</label>
+            <label htmlFor="name">👤 Full Name</label>
             <input
               id="name"
               type="text"
               name="name"
-              placeholder="Your full name"
+              placeholder="John Doe"
               value={form.name}
               onChange={handleChange}
               required
@@ -50,7 +53,7 @@ const Signup = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">📧 Email Address</label>
             <input
               id="email"
               type="email"
@@ -64,12 +67,12 @@ const Signup = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">🔐 Password</label>
             <input
               id="password"
               type="password"
               name="password"
-              placeholder="Create a strong password"
+              placeholder="Create a strong password (8+ characters)"
               value={form.password}
               onChange={handleChange}
               required
@@ -77,13 +80,18 @@ const Signup = () => {
             />
           </div>
 
-          <button type="submit" disabled={loading} className="btn-primary btn-block">
-            {loading ? "Creating Account..." : "Create Account"}
+          <button type="submit" disabled={loading} className="btn-primary btn-block btn-lg">
+            {loading ? "⏳ Creating Account..." : "🎉 Create Account"}
           </button>
         </form>
 
         <div className="auth-footer">
-          <p>Already have an account? <Link to="/login" className="link">Sign in</Link></p>
+          <p>
+            Already have an account?{" "}
+            <Link to="/login" className="link">
+              Sign in here
+            </Link>
+          </p>
         </div>
       </div>
     </div>
