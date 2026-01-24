@@ -44,48 +44,124 @@ const EventDetails = () => {
     navigate("/bookings");
   };
 
-  if (loading) return <p>Loading event details...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  if (loading) {
+    return (
+      <div className="event-details-container">
+        <div className="loading-spinner">Loading event details...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="event-details-container">
+        <div className="error-message">{error}</div>
+      </div>
+    );
+  }
+
   if (!selectedEvent) return null;
 
   return (
-    <div>
-      <h2>{selectedEvent.title}</h2>
-      <p>{selectedEvent.description}</p>
-      <p>Location: {selectedEvent.location}</p>
-      <p>Date: {selectedEvent.date}</p>
-      <p>Available Seats: {selectedEvent.availableSeats}</p>
-      <p>Price per Ticket: ₹{selectedEvent.price}</p>
+    <div className="event-details-container">
+      <div className="event-details-header">
+        <div className="details-content">
+          <h2>{selectedEvent.title}</h2>
+          <div className="event-meta">
+            <span className="meta-item">
+              <span className="icon">📍</span> {selectedEvent.location}
+            </span>
+            <span className="meta-item">
+              <span className="icon">📅</span> {new Date(selectedEvent.date).toLocaleDateString()}
+            </span>
+          </div>
+        </div>
+        <div className="price-badge">₹{selectedEvent.price}/ticket</div>
+      </div>
 
-      {!booking && (
-        <>
-          <label>Tickets:</label>
-          <input
-            type="number"
-            min="1"
-            max={selectedEvent.availableSeats}
-            value={tickets}
-            onChange={(e) => setTickets(Number(e.target.value))}
-          />
+      <div className="event-details-grid">
+        <div className="details-left">
+          <section className="details-section">
+            <h3>About This Event</h3>
+            <p className="event-description">{selectedEvent.description}</p>
+          </section>
 
-          <p>Total Amount: ₹{tickets * selectedEvent.price}</p>
+          <section className="details-section">
+            <h3>Event Details</h3>
+            <div className="info-grid">
+              <div className="info-item">
+                <label>Venue</label>
+                <p>{selectedEvent.location}</p>
+              </div>
+              <div className="info-item">
+                <label>Date</label>
+                <p>{new Date(selectedEvent.date).toLocaleDateString()}</p>
+              </div>
+              <div className="info-item">
+                <label>Available Seats</label>
+                <p>{selectedEvent.availableSeats} seats</p>
+              </div>
+              <div className="info-item">
+                <label>Price per Ticket</label>
+                <p>₹{selectedEvent.price}</p>
+              </div>
+            </div>
+          </section>
+        </div>
 
-          <button onClick={handleBooking} disabled={bookingState.loading}>
-            {bookingState.loading ? "Booking..." : "Book Ticket"}
-          </button>
+        <div className="details-right">
+          {!booking && (
+            <div className="booking-card">
+              <h3>Book Your Tickets</h3>
+              
+              <div className="form-group">
+                <label htmlFor="tickets">Number of Tickets</label>
+                <input
+                  id="tickets"
+                  type="number"
+                  min="1"
+                  max={selectedEvent.availableSeats}
+                  value={tickets}
+                  onChange={(e) => setTickets(Number(e.target.value))}
+                  className="form-input"
+                />
+              </div>
 
-          {bookingState.error && (
-            <p style={{ color: "red" }}>{bookingState.error}</p>
+              <div className="booking-summary">
+                <div className="summary-row">
+                  <span>₹{selectedEvent.price} × {tickets} ticket{tickets > 1 ? 's' : ''}</span>
+                  <span className="font-bold">₹{tickets * selectedEvent.price}</span>
+                </div>
+                <div className="summary-total">
+                  <span>Total Amount</span>
+                  <span className="text-lg font-bold">₹{tickets * selectedEvent.price}</span>
+                </div>
+              </div>
+
+              <button 
+                onClick={handleBooking} 
+                disabled={bookingState.loading}
+                className="btn-primary btn-block"
+              >
+                {bookingState.loading ? "Creating Booking..." : "Continue to Payment"}
+              </button>
+
+              {bookingState.error && (
+                <div className="error-message">{bookingState.error}</div>
+              )}
+            </div>
           )}
-        </>
-      )}
 
-      {booking && (
-        <StripePayment
-          bookingId={booking.id}
-          onSuccess={handlePaymentSuccess}
-        />
-      )}
+          {booking && (
+            <div className="payment-card">
+              <StripePayment
+                bookingId={booking.id}
+                onSuccess={handlePaymentSuccess}
+              />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

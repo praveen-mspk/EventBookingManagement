@@ -5,10 +5,21 @@ import AdminEventForm from "../components/AdminEventForm";
 const AdminDashboard = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const loadEvents = async () => {
-    const res = await api.get("/events");
-    setEvents(res.data);
+    try {
+      setLoading(true);
+      const res = await api.get("/events");
+      setEvents(res.data);
+      setError(null);
+    } catch (err) {
+      setError("Failed to load events");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -16,60 +27,106 @@ const AdminDashboard = () => {
   }, []);
 
   const createOrUpdate = async (event) => {
-    if (event.id) {
-      await api.put(`/events/${event.id}`, event);
-    } else {
-      await api.post("/events", event);
+    try {
+      if (event.id) {
+        await api.put(`/events/${event.id}`, event);
+      } else {
+        await api.post("/events", event);
+      }
+      setSelectedEvent(null);
+      loadEvents();
+    } catch (err) {
+      setError("Failed to save event");
+      console.error(err);
     }
-    setSelectedEvent(null);
-    loadEvents();
   };
 
   const deleteEvent = async (id) => {
-    if (!window.confirm("Delete this event?")) return;
-    await api.delete(`/events/${id}`);
-    loadEvents();
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+    try {
+      await api.delete(`/events/${id}`);
+      loadEvents();
+    } catch (err) {
+      setError("Failed to delete event");
+      console.error(err);
+    }
   };
 
   return (
-    <div>
-      <h2>Admin Dashboard</h2>
+    <div className="admin-dashboard">
+      <div className="admin-header">
+        <h2>Admin Dashboard</h2>
+        <p>Manage your events and bookings</p>
+      </div>
 
-      <AdminEventForm
-        onSubmit={createOrUpdate}
-        selectedEvent={selectedEvent}
-        onCancel={() => setSelectedEvent(null)}
-      />
+      {error && <div className="error-message">{error}</div>}
 
-      <h3>All Events</h3>
+      <div className="admin-grid">
+        <div className="admin-form-section">
+          <AdminEventForm
+            onSubmit={createOrUpdate}
+            selectedEvent={selectedEvent}
+            onCancel={() => setSelectedEvent(null)}
+          />
+        </div>
 
-      <table border="1" cellPadding="8">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Location</th>
-            <th>Date</th>
-            <th>Price</th>
-            <th>Seats</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {events.map((e) => (
-            <tr key={e.id}>
-              <td>{e.title}</td>
-              <td>{e.location}</td>
-              <td>{e.date}</td>
-              <td>₹{e.price}</td>
-              <td>{e.availableSeats}</td>
-              <td>
-                <button onClick={() => setSelectedEvent(e)}>Edit</button>
-                <button onClick={() => deleteEvent(e.id)}>Delete</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <div className="admin-events-section">
+          <div className="section-header">
+            <h3>All Events ({events.length})</h3>
+          </div>
+
+          {loading ? (
+            <div className="loading-spinner">Loading events...</div>
+          ) : events.length === 0 ? (
+            <div className="empty-state">
+              <p>No events created yet</p>
+              <p className="text-muted">Create your first event using the form on the left</p>
+            </div>
+          ) : (
+            <div className="events-table-responsive">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Price</th>
+                    <th>Seats</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {events.map((e) => (
+                    <tr key={e.id}>
+                      <td className="font-semibold">{e.title}</td>
+                      <td>{e.location}</td>
+                      <td>{new Date(e.date).toLocaleDateString()}</td>
+                      <td>₹{e.price}</td>
+                      <td>{e.availableSeats}</td>
+                      <td>
+                        <div className="action-buttons">
+                          <button 
+                            onClick={() => setSelectedEvent(e)}
+                            className="btn-edit"
+                          >
+                            Edit
+                          </button>
+                          <button 
+                            onClick={() => deleteEvent(e.id)}
+                            className="btn-delete"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

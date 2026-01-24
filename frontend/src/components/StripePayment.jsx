@@ -1,15 +1,21 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
+import { useState } from "react";
 import api from "../services/api";
 
 const StripePayment = ({ bookingId, onSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handlePay = async () => {
     if (!stripe || !elements) {
-      alert("Stripe not loaded yet");
+      setError("Stripe is not loaded yet. Please refresh the page.");
       return;
     }
+
+    setLoading(true);
+    setError(null);
 
     try {
       const res = await api.post(
@@ -25,7 +31,7 @@ const StripePayment = ({ bookingId, onSuccess }) => {
       });
 
       if (result.error) {
-        alert(result.error.message);
+        setError(result.error.message);
         return;
       }
 
@@ -34,19 +40,53 @@ const StripePayment = ({ bookingId, onSuccess }) => {
           `/payments/confirm?bookingId=${bookingId}&transactionId=${result.paymentIntent.id}`
         );
 
-        onSuccess(); 
+        onSuccess();
       }
     } catch (err) {
       console.error(err);
-      alert("Payment failed. Try again.");
+      setError("Payment failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const cardElementOptions = {
+    style: {
+      base: {
+        fontSize: "16px",
+        color: "#424770",
+        "::placeholder": {
+          color: "#aab7c4",
+        },
+      },
+      invalid: {
+        color: "#9e2146",
+      },
+    },
+  };
+
   return (
-    <div>
-      <h3>Payment</h3>
-      <CardElement />
-      <button onClick={handlePay}>Pay Now</button>
+    <div className="payment-container">
+      <h3>Complete Payment</h3>
+      <p className="payment-subtitle">Enter your card details to complete the booking</p>
+
+      {error && <div className="error-message">{error}</div>}
+
+      <div className="card-element-wrapper">
+        <CardElement options={cardElementOptions} />
+      </div>
+
+      <button
+        onClick={handlePay}
+        disabled={!stripe || loading}
+        className="btn-primary btn-block btn-lg"
+      >
+        {loading ? "Processing Payment..." : "Complete Payment"}
+      </button>
+
+      <p className="payment-info">
+        Your payment is secure and encrypted by Stripe
+      </p>
     </div>
   );
 };

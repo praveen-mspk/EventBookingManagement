@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../features/auth/authSlice";
+import "./Navbar.css";
 
 const Navbar = () => {
   const { token, role } = useSelector((state) => state.auth);
@@ -13,54 +14,56 @@ const Navbar = () => {
   };
 
   return (
-    <nav style={styles.nav}>
-      <h3 style={styles.logo}>Smart Event Booking</h3>
+    <nav className="navbar">
+      <div className="navbar-container">
+        <Link to="/" className="navbar-logo">
+          <span className="logo-icon">🎯</span>
+          Smart Event Booking
+        </Link>
 
-      <div style={styles.links}>
-        {!token && (
-          <>
-            <Link to="/login">Login</Link>
-            <Link to="/signup">Signup</Link>
-          </>
-        )}
+        <div className="navbar-menu">
+          {!token && (
+            <div className="navbar-links">
+              <Link to="/login" className="nav-link">
+                Login
+              </Link>
+              <Link to="/signup" className="nav-link">
+                Signup
+              </Link>
+            </div>
+          )}
 
-        {token && role === "USER" && (
-          <>
-            <Link to="/events">Events</Link>
-            <Link to="/bookings">My Bookings</Link>
-            <button onClick={handleLogout}>Logout</button>
-          </>
-        )}
+          {token && role === "USER" && (
+            <div className="navbar-links">
+              <Link to="/" className="nav-link">
+                Home
+              </Link>
+              <Link to="/events" className="nav-link">
+                Events
+              </Link>
+              <Link to="/bookings" className="nav-link">
+                My Bookings
+              </Link>
+              <button onClick={handleLogout} className="nav-logout">
+                Logout
+              </button>
+            </div>
+          )}
 
-        {token && role === "ADMIN" && (
-          <>
-            <Link to="/admin">Admin</Link>
-            <button onClick={handleLogout}>Logout</button>
-          </>
-        )}
+          {token && role === "ADMIN" && (
+            <div className="navbar-links">
+              <Link to="/admin" className="nav-link">
+                Dashboard
+              </Link>
+              <button onClick={handleLogout} className="nav-logout">
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
-};
-
-const styles = {
-  nav: {
-    height: "60px",
-    background: "#0f172a",
-    color: "white",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "0 40px",
-  },
-  logo: {
-    margin: 0,
-  },
-  links: {
-    display: "flex",
-    gap: "20px",
-    alignItems: "center",
-  },
 };
 
 export default Navbar;
