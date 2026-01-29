@@ -1,7 +1,7 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import api from "../services/api";
-
+import "../styles/payment.css";
 const StripePayment = ({ bookingId, onSuccess }) => {
   const stripe = useStripe();
   const elements = useElements();

@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 const Home = () => {
   const { token, role } = useSelector((state) => state.auth);
 
@@ -8,11 +7,11 @@ const Home = () => {
     <div className="home-container">
       <section className="hero-section">
         <div className="hero-content">
-          <h1>✨ Your Ultimate Event Booking Destination</h1>
-          <p>
+          <h1>Your Ultimate Event Booking Destination</h1>
+          {/* <p>
             Discover, book, and experience the most amazing events in your city.
             From concerts to conferences, we've got you covered!
-          </p>
+          </p> */}
           {token ? (
             role === "ADMIN" ? (
               <Link to="/admin" className="btn-primary btn-lg">

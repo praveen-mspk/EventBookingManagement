@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEvents } from "../features/events/eventsSlice";
 import { Link } from "react-router-dom";
-
+import "../styles/events.css";
 const Events = () => {
   const dispatch = useDispatch();
   const { events, loading, error } = useSelector((state) => state.events);

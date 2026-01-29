@@ -1,0 +1,10 @@
+.payment-container {
+  text-align: center;
+}
+
+.card-element-wrapper {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}

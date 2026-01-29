@@ -1,0 +1,21 @@
+.app-container {
+  max-width: 1400px;
+  margin: auto;
+  padding: 1.5rem;
+}
+
+.hero-section {
+  background: linear-gradient(120deg, #2563eb, #1e40af);
+  color: white;
+  padding: 4rem 2rem;
+  border-radius: 20px;
+  margin-bottom: 3rem;
+}
+
+.hero-content {
+  max-width: 700px;
+}
+
+.features-section {
+  margin: 4rem 0;
+}

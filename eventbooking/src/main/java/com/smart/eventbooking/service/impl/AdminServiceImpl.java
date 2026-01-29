@@ -1,6 +1,7 @@
 package com.smart.eventbooking.service.impl;
 
 import com.smart.eventbooking.dto.AdminAnalyticsDTO;
+import com.smart.eventbooking.dto.AdminEventBookingDTO;
 import com.smart.eventbooking.dto.BookingDTO;
 import com.smart.eventbooking.entity.Booking;
 import com.smart.eventbooking.repository.BookingRepository;
@@ -53,6 +54,22 @@ public class AdminServiceImpl implements AdminService {
                 totalBookings,
                 totalRevenue
         );
+    }
+
+    @Override
+    public List<AdminEventBookingDTO> getBookingsByEvent(Long eventId) {
+
+        return bookingRepository.findByEventId(eventId)
+                .stream()
+                .map(booking -> new AdminEventBookingDTO(
+                        booking.getId(),
+                        booking.getUser().getName(),
+                        booking.getUser().getEmail(),
+                        booking.getNumberOfTickets(),
+                        booking.getTotalAmount(),
+                        booking.getBookingStatus()
+                ))
+                .collect(Collectors.toList());
     }
 
     private BookingDTO mapToDTO(Booking booking) {

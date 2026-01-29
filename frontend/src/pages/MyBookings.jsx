@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMyBookings } from "../features/booking/bookingSlice";
-
+import "../styles/bookings.css";
 const MyBookings = () => {
   const dispatch = useDispatch();
   const { bookings, loading, error } = useSelector(

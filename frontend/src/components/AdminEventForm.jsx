@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import "../styles/forms.css";
 const AdminEventForm = ({ onSubmit, selectedEvent, onCancel }) => {
   const [form, setForm] = useState({
     title: "",

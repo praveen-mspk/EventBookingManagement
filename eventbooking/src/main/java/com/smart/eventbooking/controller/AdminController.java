@@ -1,6 +1,7 @@
 package com.smart.eventbooking.controller;
 
 import com.smart.eventbooking.dto.AdminAnalyticsDTO;
+import com.smart.eventbooking.dto.AdminEventBookingDTO;
 import com.smart.eventbooking.dto.BookingDTO;
 import com.smart.eventbooking.service.AdminService;
 import org.springframework.web.bind.annotation.*;
@@ -27,4 +28,12 @@ public class AdminController {
     public AdminAnalyticsDTO getAnalytics() {
         return adminService.getAnalytics();
     }
+
+    @GetMapping("/bookings/event/{eventId}")
+    public List<AdminEventBookingDTO> getBookingsByEvent(
+            @PathVariable Long eventId
+    ) {
+        return adminService.getBookingsByEvent(eventId);
+    }
+
 }

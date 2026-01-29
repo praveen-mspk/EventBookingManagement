@@ -7,7 +7,7 @@ import {
 } from "../features/events/eventsSlice";
 import { createBooking } from "../features/booking/bookingSlice";
 import StripePayment from "../components/StripePayment";
-
+import "../styles/event-details.css";
 const EventDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();

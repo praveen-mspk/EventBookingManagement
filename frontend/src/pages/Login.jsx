@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../features/auth/authSlice";
 import { useNavigate, Link } from "react-router-dom";
-
+import "../styles/auth.css";
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ const Login = () => {
       <div className="auth-card">
         <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
           <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🎯</div>
-          <h2 className="auth-title">Welcome Back! 👋</h2>
+          <h2 className="auth-title">Welcome Back!</h2>
           <p className="auth-subtitle">Sign in to explore amazing events and book your tickets</p>
         </div>
 
