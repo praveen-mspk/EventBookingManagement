@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import AdminEventForm from "../components/AdminEventForm";
-import "../styles/admin.css";
 
 const AdminDashboard = () => {
   const [events, setEvents] = useState([]);
@@ -9,7 +8,6 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  /* 🔽 NEW STATES (ADDED) */
   const [selectedEventId, setSelectedEventId] = useState("");
   const [eventBookings, setEventBookings] = useState([]);
   const [bookingLoading, setBookingLoading] = useState(false);
@@ -58,7 +56,6 @@ const AdminDashboard = () => {
     }
   };
 
-  /* 🔽 FETCH BOOKINGS BY EVENT (NEW FEATURE) */
   useEffect(() => {
     if (!selectedEventId) {
       setEventBookings([]);
@@ -84,16 +81,29 @@ const AdminDashboard = () => {
   }, [selectedEventId]);
 
   return (
-    <div className="admin-dashboard">
-      <div className="admin-header">
-        <h2>📊 Admin Dashboard</h2>
-        <p>Create, manage, and monitor all your events and bookings</p>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-purple-100 p-6">
+
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-800">
+          Admin Dashboard
+        </h2>
+        <p className="text-gray-500 mt-2">
+          Create, manage, and monitor all your events and bookings
+        </p>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="max-w-4xl mx-auto mb-6 bg-red-100 text-red-700 px-4 py-3 rounded-lg border border-red-300">
+          {error}
+        </div>
+      )}
 
-      <div className="admin-grid">
-        <div className="admin-form-section">
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        {/* Form Section */}
+        <div className="bg-white rounded-2xl shadow-xl p-6">
           <AdminEventForm
             onSubmit={createOrUpdate}
             selectedEvent={selectedEvent}
@@ -101,95 +111,94 @@ const AdminDashboard = () => {
           />
         </div>
 
-        <div className="admin-events-section">
-          <div className="section-header">
-            <h3>📅 All Events ({events.length})</h3>
-          </div>
+        {/* Events Section */}
+        <div className="bg-white rounded-2xl shadow-xl p-6 overflow-x-auto">
+          <h3 className="text-xl font-semibold mb-4">
+            All Events ({events.length})
+          </h3>
 
           {loading ? (
-            <div className="loading-spinner">
+            <div className="text-gray-500 animate-pulse">
               Loading your amazing events...
             </div>
           ) : events.length === 0 ? (
-            <div className="empty-state">
-              <p>🎭 No events created yet</p>
-              <p className="text-muted">
-                Create your first event using the form on the left and start
-                accepting bookings!
+            <div className="text-center text-gray-500 py-8">
+              <p className="text-lg">No events created yet</p>
+              <p className="text-sm mt-2">
+                Create your first event using the form and start accepting bookings!
               </p>
             </div>
           ) : (
-            <div className="events-table-responsive">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>🎪 Event Title</th>
-                    <th>📍 Location</th>
-                    <th>🗓️ Date</th>
-                    <th>💰 Price</th>
-                    <th>💺 Seats</th>
-                    <th>⚙️ Actions</th>
+            <table className="min-w-full text-sm text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-100 text-gray-600 uppercase text-xs">
+                  <th className="px-4 py-3">Event</th>
+                  <th className="px-4 py-3">Location</th>
+                  <th className="px-4 py-3">Date</th>
+                  <th className="px-4 py-3">Price</th>
+                  <th className="px-4 py-3">Seats</th>
+                  <th className="px-4 py-3 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {events.map((e) => (
+                  <tr
+                    key={e.id}
+                    className="border-b hover:bg-gray-50 transition"
+                  >
+                    <td className="px-4 py-3 font-semibold">
+                      {e.title}
+                    </td>
+                    <td className="px-4 py-3">{e.location}</td>
+                    <td className="px-4 py-3">
+                      {new Date(e.date).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </td>
+                    <td className="px-4 py-3">₹{e.price}</td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`font-bold ${
+                          e.availableSeats < 5
+                            ? "text-red-500"
+                            : "text-green-600"
+                        }`}
+                      >
+                        {e.availableSeats}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 flex justify-center gap-3">
+                      <button
+                        onClick={() => setSelectedEvent(e)}
+                        className="px-3 py-1 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500 transition"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteEvent(e.id)}
+                        className="px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {events.map((e) => (
-                    <tr key={e.id}>
-                      <td className="font-semibold">{e.title}</td>
-                      <td>{e.location}</td>
-                      <td>
-                        {new Date(e.date).toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </td>
-                      <td>₹{e.price}</td>
-                      <td>
-                        <span
-                          style={{
-                            color:
-                              e.availableSeats < 5
-                                ? "#ef4444"
-                                : "#10b981",
-                            fontWeight: "700",
-                          }}
-                        >
-                          {e.availableSeats}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="action-buttons">
-                          <button
-                            onClick={() => setSelectedEvent(e)}
-                            className="btn-edit"
-                            title="Edit this event"
-                          >
-                            ✏️ Edit
-                          </button>
-                          <button
-                            onClick={() => deleteEvent(e.id)}
-                            className="btn-delete"
-                            title="Delete this event"
-                          >
-                            🗑️ Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           )}
         </div>
       </div>
 
-      {/* 🔽 NEW SECTION: VIEW USERS WHO BOOKED */}
-      <div className="admin-section">
-        <h3>🎟️ View Bookings by Event</h3>
+      {/* Bookings Section */}
+      <div className="mt-10 bg-white rounded-2xl shadow-xl p-6 max-w-6xl mx-auto">
+        <h3 className="text-xl font-semibold mb-4">
+          🎟️ View Bookings by Event
+        </h3>
 
         <select
-          className="form-input"
+          className="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none mb-6"
           value={selectedEventId}
           onChange={(e) => setSelectedEventId(e.target.value)}
         >
@@ -202,35 +211,44 @@ const AdminDashboard = () => {
         </select>
 
         {bookingLoading && (
-          <div className="loading-spinner">Loading bookings...</div>
+          <div className="text-gray-500 animate-pulse">
+            Loading bookings...
+          </div>
         )}
 
         {!bookingLoading &&
           selectedEventId &&
           eventBookings.length === 0 && (
-            <p className="text-muted">No bookings for this event.</p>
+            <p className="text-gray-500">
+              No bookings for this event.
+            </p>
           )}
 
         {eventBookings.length > 0 && (
-          <div className="events-table-responsive">
-            <table className="admin-table">
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-left border-collapse">
               <thead>
-                <tr>
-                  <th>👤 User Name</th>
-                  <th>📧 Email</th>
-                  <th>🎫 Tickets</th>
-                  <th>💵 Amount</th>
-                  <th>📌 Status</th>
+                <tr className="bg-gray-100 text-gray-600 uppercase text-xs">
+                  <th className="px-4 py-3">User</th>
+                  <th className="px-4 py-3">Email</th>
+                  <th className="px-4 py-3">Tickets</th>
+                  <th className="px-4 py-3">Amount</th>
+                  <th className="px-4 py-3">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {eventBookings.map((b) => (
-                  <tr key={b.bookingId}>
-                    <td>{b.userName}</td>
-                    <td>{b.userEmail}</td>
-                    <td>{b.numberOfTickets}</td>
-                    <td>₹{b.totalAmount}</td>
-                    <td>{b.bookingStatus}</td>
+                  <tr
+                    key={b.bookingId}
+                    className="border-b hover:bg-gray-50 transition"
+                  >
+                    <td className="px-4 py-3">{b.userName}</td>
+                    <td className="px-4 py-3">{b.userEmail}</td>
+                    <td className="px-4 py-3">{b.numberOfTickets}</td>
+                    <td className="px-4 py-3">₹{b.totalAmount}</td>
+                    <td className="px-4 py-3 font-semibold text-indigo-600">
+                      {b.bookingStatus}
+                    </td>
                   </tr>
                 ))}
               </tbody>

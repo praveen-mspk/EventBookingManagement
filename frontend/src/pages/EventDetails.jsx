@@ -7,7 +7,7 @@ import {
 } from "../features/events/eventsSlice";
 import { createBooking } from "../features/booking/bookingSlice";
 import StripePayment from "../components/StripePayment";
-import "../styles/event-details.css";
+
 const EventDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -46,16 +46,20 @@ const EventDetails = () => {
 
   if (loading) {
     return (
-      <div className="event-details-container">
-        <div className="loading-spinner">Loading event details...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-purple-100">
+        <div className="text-gray-600 animate-pulse text-lg">
+          Loading event details...
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="event-details-container">
-        <div className="error-message">{error}</div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-purple-100">
+        <div className="bg-red-100 text-red-700 px-6 py-4 rounded-lg border border-red-300">
+          {error}
+        </div>
       </div>
     );
   }
@@ -63,104 +67,164 @@ const EventDetails = () => {
   if (!selectedEvent) return null;
 
   return (
-    <div className="event-details-container">
-      <div className="event-details-header">
-        <div className="details-content">
-          <h2>🎪 {selectedEvent.title}</h2>
-          <div className="event-meta">
-            <span className="meta-item">
-              <span className="icon">📍</span> {selectedEvent.location}
-            </span>
-            <span className="meta-item">
-              <span className="icon">📅</span> {new Date(selectedEvent.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
-            </span>
-            <span className="meta-item">
-              <span className="icon">⭐</span> Premium Event
-            </span>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-purple-100 p-6">
+
+      {/* Header */}
+      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-xl p-8 mb-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800">
+              🎪 {selectedEvent.title}
+            </h2>
+
+            <div className="flex flex-wrap gap-4 text-gray-600 mt-4 text-sm">
+              <span> {selectedEvent.location}</span>
+              <span>
+                {" "}
+                {new Date(selectedEvent.date).toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+              <span>⭐ Premium Event</span>
+            </div>
+          </div>
+
+          <div className="text-2xl font-bold text-white bg-indigo-600 px-6 py-3 rounded-xl shadow">
+            ₹{selectedEvent.price}
           </div>
         </div>
-        <div className="price-badge">₹{selectedEvent.price}</div>
       </div>
 
-      <div className="event-details-grid">
-        <div className="details-left">
-          <section className="details-section">
-            <h3>📖 About This Event</h3>
-            <p className="event-description">
-              {selectedEvent.description || "Get ready for an unforgettable experience! This event promises to deliver amazing moments and memories that will last a lifetime."}
-            </p>
-          </section>
+      {/* Main Grid */}
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-          <section className="details-section">
-            <h3>📋 Event Information</h3>
-            <div className="info-grid">
-              <div className="info-item">
-                <label>🏢 Venue</label>
-                <p>{selectedEvent.location}</p>
+        {/* Left Side */}
+        <div className="lg:col-span-2 space-y-6">
+
+          {/* About Section */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-semibold mb-4">
+               About This Event
+            </h3>
+            <p className="text-gray-600 leading-relaxed">
+              {selectedEvent.description ||
+                "Get ready for an unforgettable experience! This event promises to deliver amazing moments and memories that will last a lifetime."}
+            </p>
+          </div>
+
+          {/* Info Section */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-semibold mb-6">
+              Event Information
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
+              <div>
+                <p className="text-sm text-gray-500">Venue</p>
+                <p className="font-semibold">{selectedEvent.location}</p>
               </div>
-              <div className="info-item">
-                <label>🗓️ Date & Time</label>
-                <p>{new Date(selectedEvent.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}</p>
+
+              <div>
+                <p className="text-sm text-gray-500">Date & Time</p>
+                <p className="font-semibold">
+                  {new Date(selectedEvent.date).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
               </div>
-              <div className="info-item">
-                <label>💺 Available Seats</label>
-                <p style={{ color: selectedEvent.availableSeats < 10 ? "#ef4444" : "#10b981", fontWeight: "700" }}>
+
+              <div>
+                <p className="text-sm text-gray-500">Available Seats</p>
+                <p
+                  className={`font-bold ${
+                    selectedEvent.availableSeats < 10
+                      ? "text-red-500"
+                      : "text-green-600"
+                  }`}
+                >
                   {selectedEvent.availableSeats} seats
                 </p>
               </div>
-              <div className="info-item">
-                <label>💰 Price per Ticket</label>
-                <p>₹{selectedEvent.price}</p>
+
+              <div>
+                <p className="text-sm text-gray-500">Price per Ticket</p>
+                <p className="font-semibold">
+                  ₹{selectedEvent.price}
+                </p>
               </div>
             </div>
-          </section>
+          </div>
         </div>
 
-        <div className="details-right">
+        {/* Right Side */}
+        <div>
+
           {!booking && (
-            <div className="booking-card">
-              <h3>🎫 Book Your Tickets</h3>
-              
-              <div className="form-group">
-                <label htmlFor="tickets">🎟️ Number of Tickets</label>
+            <div className="bg-white rounded-2xl shadow-xl p-6 sticky top-6">
+              <h3 className="text-xl font-semibold mb-6">
+                Book Your Tickets
+              </h3>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-600 mb-2">
+                  Number of Tickets
+                </label>
                 <input
-                  id="tickets"
                   type="number"
                   min="1"
                   max={selectedEvent.availableSeats}
                   value={tickets}
                   onChange={(e) => setTickets(Number(e.target.value))}
-                  className="form-input"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:outline-none"
                 />
               </div>
 
-              <div className="booking-summary">
-                <div className="summary-row">
-                  <span>₹{selectedEvent.price} × {tickets} ticket{tickets > 1 ? 's' : ''}</span>
-                  <span className="font-bold">₹{tickets * selectedEvent.price}</span>
+              {/* Summary */}
+              <div className="bg-gray-50 rounded-xl p-4 mb-6 text-sm space-y-3">
+                <div className="flex justify-between">
+                  <span>
+                    ₹{selectedEvent.price} × {tickets} ticket
+                    {tickets > 1 ? "s" : ""}
+                  </span>
+                  <span className="font-semibold">
+                    ₹{tickets * selectedEvent.price}
+                  </span>
                 </div>
-                <div className="summary-total">
-                  <span>💰 Total Amount</span>
-                  <span className="text-lg font-bold">₹{tickets * selectedEvent.price}</span>
+
+                <div className="flex justify-between border-t pt-3 text-base font-bold">
+                  <span>Total Amount</span>
+                  <span>₹{tickets * selectedEvent.price}</span>
                 </div>
               </div>
 
-              <button 
-                onClick={handleBooking} 
+              <button
+                onClick={handleBooking}
                 disabled={bookingState.loading}
-                className="btn-primary btn-block btn-lg"
+                className={`w-full py-3 rounded-lg font-semibold text-white shadow-md transition ${
+                  bookingState.loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-indigo-600 hover:bg-indigo-700"
+                }`}
               >
-                {bookingState.loading ? "⏳ Creating Booking..." : "💳 Continue to Payment"}
+                {bookingState.loading
+                  ? "⏳ Creating Booking..."
+                  : "Continue to Payment"}
               </button>
 
               {bookingState.error && (
-                <div className="error-message">{bookingState.error}</div>
+                <div className="mt-4 bg-red-100 text-red-700 px-4 py-2 rounded-lg border border-red-300 text-sm">
+                  {bookingState.error}
+                </div>
               )}
             </div>
           )}
 
           {booking && (
-            <div className="payment-card">
+            <div className="bg-white rounded-2xl shadow-xl p-6">
               <StripePayment
                 bookingId={booking.id}
                 onSuccess={handlePaymentSuccess}
